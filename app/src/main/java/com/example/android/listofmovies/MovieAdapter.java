@@ -17,17 +17,17 @@ import java.util.List;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private LayoutInflater inflater;
+    private LayoutInflater mInflater;
     private List<MovieInfo> listOfInfo = Collections.emptyList();
 
     public MovieAdapter(Context context, List<MovieInfo> listOfInfo) {
-        inflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(context);
         this.listOfInfo = listOfInfo;
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View movieItemView = inflater.inflate(R.layout.item_movie, parent, false);
+        View movieItemView = mInflater.inflate(R.layout.item_movie, parent, false);
         MovieViewHolder movieViewHolder = new MovieViewHolder(movieItemView);
         return movieViewHolder;
     }
