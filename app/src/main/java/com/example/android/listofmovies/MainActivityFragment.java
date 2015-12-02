@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -18,14 +22,36 @@ public class MainActivityFragment extends Fragment {
 
     private MovieAdapter mMovieAdapter;
     private RecyclerView mRecyclerView;
+    private APIService mService;
 
-    public MainActivityFragment() {
         // do not touch the constructor of fragments and activities
         // if you wanted to put something here,
         // put then in onViewCreated or onActivityCreated
 
-    }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://raw.githubusercontent.com")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        mService = retrofit.create(APIService.class);
+
+        mService.loadRepo().enqueue(new Callback<Response>() {
+            @Override
+            public void onResponse(retrofit.Response<Response> response, Retrofit retrofit) {
+                mMovieAdapter.setListOfInfo(response.body().getMovies());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

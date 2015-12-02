@@ -45,8 +45,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
         MovieInfo info = listOfInfo.get(position);
 
-        holder.icon.setImageResource(info.iconId);
-
         holder.title.setText(info.movieTitle);
 
     }
