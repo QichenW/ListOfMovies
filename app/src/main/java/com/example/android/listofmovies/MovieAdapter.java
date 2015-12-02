@@ -33,12 +33,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-
     @Override
     public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
         MovieInfo info = listOfInfo.get(position);
 
-        //holder.icon.setImageResource(info.iconId);
+        holder.icon.setImageResource(info.iconId);
 
         holder.title.setText(info.movieTitle);
 
@@ -49,9 +48,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return listOfInfo.size();
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder{
+    class MovieViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         ImageView icon;
+
         public MovieViewHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.movie_title);
