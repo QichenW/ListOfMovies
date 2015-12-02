@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,19 +17,28 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private LayoutInflater mInflater;
-    private List<MovieInfo> listOfInfo = Collections.emptyList();
+    private List<MovieInfo> listOfInfo = null;
 
-    public MovieAdapter(Context context, List<MovieInfo> listOfInfo) {
+    public MovieAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
+
+    }
+
+    public void setListOfInfo(List<MovieInfo> listOfInfo) {
         this.listOfInfo = listOfInfo;
+
+        // notify the observer of the adapter to update the data set
+        // this is a method of Adapter
+        notifyDataSetChanged();
+
     }
 
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View movieItemView = mInflater.inflate(R.layout.item_movie, parent, false);
-        MovieViewHolder movieViewHolder = new MovieViewHolder(movieItemView);
-        return movieViewHolder;
+        return new MovieViewHolder(movieItemView);
     }
+
 
 
     @Override
@@ -45,7 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public int getItemCount() {
-        return listOfInfo.size();
+        return listOfInfo == null ? 0 : listOfInfo.size();
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {

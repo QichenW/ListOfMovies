@@ -1,16 +1,13 @@
 package com.example.android.listofmovies;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,11 +17,13 @@ import java.util.List;
 public class MainActivityFragment extends Fragment {
 
     private MovieAdapter mMovieAdapter;
+    private RecyclerView mRecyclerView;
 
     public MainActivityFragment() {
-        List<MovieInfo> listOfInfo = Collections.emptyList();
+        // do not touch the constructor of fragments and activities
+        // if you wanted to put something here,
+        // put then in onViewCreated or onActivityCreated
 
-        mMovieAdapter = new MovieAdapter(this.getContext(), listOfInfo);
     }
 
 
@@ -34,8 +33,27 @@ public class MainActivityFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_movies);
-        recyclerView.setAdapter(mMovieAdapter);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_movies);
+
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        super.onViewCreated(view, savedInstanceState);
+
+        mMovieAdapter = new MovieAdapter(this.getActivity());
+
+        //A LayoutManager is responsible for measuring and positioning item views
+        // within a RecyclerView as well as determining the policy for when to recycle
+        // item views that are no longer visible to the user.
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+
+        // setting layout manager before setting adapter
+        mRecyclerView.setAdapter(mMovieAdapter);
+
+        List<MovieInfo> listOfInfo = Collections.emptyList();
+        mMovieAdapter.setListOfInfo(listOfInfo);
     }
 }
