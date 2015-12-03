@@ -15,6 +15,7 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -26,8 +27,9 @@ public class MainActivityFragment extends Fragment {
     private MovieAdapter mMovieAdapter;
     private RecyclerView mRecyclerView;
     private APIService mService;
+    private Subscription mSubscription;
 
-        // do not touch the constructor of fragments and activities
+    // do not touch the constructor of fragments and activities
         // if you wanted to put something here,
         // put then in onViewCreated or onActivityCreated
 
@@ -58,9 +60,10 @@ Log.e(this.getClass().getSimpleName(), "failed to make asynchronous request");
         });
 
  */
-        mService.loadRepoRx()
+        mSubscription = mService.loadRepoRx()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())  // prevent network operation on mainTread (illicit)
                 .subscribe(new Subscriber<Response>() {
                     @Override
                     public void onCompleted() {
@@ -107,5 +110,13 @@ Log.e(this.getClass().getSimpleName(), "failed to make asynchronous request");
 
         List<MovieInfo> listOfInfo = Collections.emptyList();
         mMovieAdapter.setListOfInfo(listOfInfo);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // to prevent memory leaking
+        mSubscription.unsubscribe();
     }
 }
