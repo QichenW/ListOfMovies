@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import java.util.Collections;
 import java.util.List;
 
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -36,10 +39,11 @@ public class MainActivityFragment extends Fragment {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://raw.githubusercontent.com")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
         mService = retrofit.create(APIService.class);
-
+/**
         mService.loadRepo().enqueue(new Callback<Response>() {
             @Override
             public void onResponse(retrofit.Response<Response> response, Retrofit retrofit) {
@@ -48,9 +52,31 @@ public class MainActivityFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
+Log.e(this.getClass().getSimpleName(), "failed to make asynchronous request");
 
             }
         });
+
+ */
+        mService.loadRepoRx()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        mMovieAdapter.setListOfInfo(response.getMovies());
+                    }
+                });
     }
 
     @Override
